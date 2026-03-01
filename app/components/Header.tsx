@@ -153,9 +153,10 @@ export function Header() {
         </div>
       </div>
 
+
       {/* Мобильное меню */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ${
+        className={`md:hidden overflow-hidden transition-all duration-300 rounded-b-2xl ${
           isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
@@ -163,9 +164,8 @@ export function Header() {
           <nav className="flex flex-col p-4 gap-2">
             {[
               { name: "Главная", href: "/" },
-              { name: "Товары", href: "/products" },
+              { name: "Каталог", href: "/catalog" },
               { name: "О нас", href: "/about" },
-              { name: "Контакты", href: "/contacts" },
             ].map((item) => (
               <a
                 key={item.name}
@@ -199,14 +199,7 @@ export function Header() {
               </a>
             </div>
 
-            <button className="mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 hover:bg-amber-600 text-white text-sm font-semibold rounded-xl transition-all">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-                <circle cx="8" cy="21" r="1" />
-                <circle cx="19" cy="21" r="1" />
-                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-              </svg>
-              Корзина
-            </button>
+            
           </nav>
         </div>
       </div>
