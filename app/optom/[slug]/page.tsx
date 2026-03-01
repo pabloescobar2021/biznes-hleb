@@ -1,15 +1,18 @@
-import { seoPages } from "@/lib/seo/seoCategories";
+import { getSeoPages } from "@/lib/seo/seoCategories";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
+import { getProducts, getCategories } from "@/utils/catalog/getCatalog";
+import { Category } from "@/app/types/types";
 
 type Props = {
     params: Promise<{ slug: string }>;
 }
 
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
-    const page = seoPages[slug];
+    const page = await getSeoPages().then(pages => pages.find(page => page.slug === slug));
     if (!page) return {};
     return {
         title: `${page.title} — купить с доставкой | Бизнес и Хлеб`,
@@ -22,10 +25,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             type: "website",
         },
     };
-}
+}   
 
-export async function generateStaticParams() {
-    return Object.keys(seoPages).map((slug) => ({ slug }));
+export async function generateStaticParams({params}: Props) {
+    const { slug } = await params;
+    const page = await getSeoPages().then(pages => pages.find(page => page.slug === slug));
+    return page ? [{ slug: page.slug }] : [];
 }
 
 const advantages = [
@@ -58,10 +63,12 @@ const faqs = (name: string) => [
 
 export default async function OptomCategoryPage({ params }: Props) {
     const { slug } = await params;
-    const page = seoPages[slug];
+    const page = await getSeoPages().then(pages => pages.find(page => page.slug === slug));
     if (!page) return notFound();
 
     const phone = process.env.NEXT_PUBLIC_PHONE
+
+    const category: Category[] = await getCategories()
 
     return (
         <main style={{ background: 'var(--color-bg)', fontFamily: 'var(--font-body)' }}>
@@ -142,7 +149,7 @@ export default async function OptomCategoryPage({ params }: Props) {
                     {/* CTA кнопки */}
                     <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                         <Link
-                            href="/catalog"
+                            href={`/catalog/${page.cleanSlug}`}
                             style={{
                                 display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
                                 padding: '0.85rem 2rem',
@@ -354,6 +361,60 @@ export default async function OptomCategoryPage({ params }: Props) {
                 </div>
             </section>
 
+
+            {/* Другие наши товары и категории */}
+            <section className="py-8">
+                <h2 style={{
+                    fontFamily: "var(--font-display)",
+                    color: "var(--color-secondary)",
+                    fontSize: "1.4rem",
+                    fontWeight: 700,
+                    marginBottom: "1.25rem",
+                }}>
+                    Другие категории
+                </h2>
+
+                <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                    gap: "0.85rem",
+                }}>
+                    {category
+                    .filter(cat => cat.slug !== page.cleanSlug)
+                    .map((cat, i) => (
+                        <Link
+                            key={i}
+                            href={`/optom/${cat.slug}`}
+                            style={{
+                                background: "linear-gradient(135deg, #FDF4E6 0%, #fde9b8 50%, #ffc260 100%)",
+                                borderRadius: "1rem",
+                                padding: "1.1rem 1.25rem",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                color: "var(--color-secondary)",
+                                fontWeight: 600,
+                                fontSize: "0.9rem",
+                                boxShadow: "0 2px 8px rgba(146,64,14,0.08)",
+                                border: "1px solid rgba(217,119,6,0.15)",
+                                transition: "transform 0.15s, box-shadow 0.15s",
+                                textDecoration: "none",
+                            }}
+                            
+                        >
+                            <span>{cat.name}</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="var(--color-primary)" strokeWidth="2.5" strokeLinecap="round"
+                            >
+                                <path d="M5 12h14M13 6l6 6-6 6"/>
+                            </svg>
+                        </Link>
+                    ))}
+                </div>
+            </section>
+
+
+
             {/* ── CTA ФИНАЛЬНЫЙ ── */}
             <section style={{
                 padding: '5rem 1.5rem',
@@ -437,8 +498,8 @@ export default async function OptomCategoryPage({ params }: Props) {
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 "itemListElement": [
-                    { "@type": "ListItem", "position": 1, "name": "Главная", "item": "https://biznesihleb.ru" },
-                    { "@type": "ListItem", "position": 2, "name": page.title, "item": `https://biznesihleb.ru/optom/${slug}` }
+                    { "@type": "ListItem", "position": 1, "name": "Главная", "item": "https://biznes-hleb.ru" },
+                    { "@type": "ListItem", "position": 2, "name": page.title, "item": `https://biznes-hleb.ru/optom/${slug}` }
                 ]
             })}} />
         </main>

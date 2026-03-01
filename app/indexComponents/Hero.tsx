@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Product } from "../types/types";
+import Link from "next/link";
 
 type Props = {
     products: Product[]
@@ -67,9 +68,9 @@ export function Hero() {
 
                 {/* Кнопки */}
                 <div className="flex gap-4">
-                    <button className="btn-primary">
+                    <Link href="/catalog" className="btn-primary">
                     Смотреть каталог
-                    </button>
+                    </Link>
 
                     <button className="px-6 py-3 rounded-md border border-amber-500 text-amber-600 font-semibold hover:bg-amber-50 transition">
                     Получить прайс
@@ -80,7 +81,7 @@ export function Hero() {
            
            <div className="absolute inset-0 bg-black-20 backdrop-blur-md z-2"></div>
             
-            <video
+            <video  
                 autoPlay
                 loop
                 muted
