@@ -22,6 +22,14 @@ export function CategorySidebar({
 
   return (
     <>
+        {/* Оверлей — закрывает при клике мимо */}
+        {open && (
+            <div 
+                className="fixed inset-0 bg-black/40 z-30 md:hidden"
+                onClick={() => setOpen(false)}
+            />
+        )}
+
         <aside
             style={{
                 background: 'var(--color-secondary)',    // #92400e тёмно-коричневый
@@ -131,14 +139,16 @@ export function CategorySidebar({
             </div>
         </aside>
 
+        {/* Кнопка открытия — внизу экрана, удобно для большого пальца */}
         {!open && (
-            <div className={`fixed top-1/2 -translate-y-1/2 h-15 flexC backdrop-blur-2xl bg-(--color-secondary) text-white py-2 rounded-r-2xl
-
-                ${!open ? '' : 'hidden'}`} 
-                onClick={() => setOpen(prev => !prev)}
+            <button
+                className="fixed bottom-6 left-4 z-50 md:hidden
+                        bg-(--color-secondary) text-white 
+                        px-4 py-3 rounded-full shadow-lg"
+                onClick={() => setOpen(true)}
             >
-                    <Icon name="sideBarOpen" className=" w-5 h-5"  />
-            </div>
+                <Icon name="sideBarOpen" className="w-5 h-5" />
+            </button>
         )}
     </>
   );
