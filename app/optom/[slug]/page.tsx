@@ -27,10 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
 }   
 
-export async function generateStaticParams({params}: Props) {
-    const { slug } = await params;
-    const page = await getSeoPages().then(pages => pages.find(page => page.slug === slug));
-    return page ? [{ slug: page.slug }] : [];
+export async function generateStaticParams() {
+    const pages = await getSeoPages();
+    return pages.map(page => ({ slug: page.slug }));
 }
 
 const advantages = [
