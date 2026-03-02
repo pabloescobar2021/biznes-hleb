@@ -23,8 +23,8 @@ export function YandexMap() {
       window.ymaps.ready(() => {
         // @ts-ignore
         const map = new window.ymaps.Map(mapRef.current, {
-          center: [55.751574, 37.573856],
-          zoom: 13,
+          center: [53.189129, 50.245586],
+          zoom: 15,
           controls: ["zoomControl"],
         });
 
@@ -32,9 +32,9 @@ export function YandexMap() {
         // Кастомная метка
         // @ts-ignore
         const placemark = new window.ymaps.Placemark(
-          [55.751574, 37.573856],
+          [53.189129, 50.245586],
           {
-            balloonContent: "<strong>Наш офис</strong><br/>Москва",
+            balloonContent: "<strong>Наш офис</strong><br/>Самара",
           },
           {
             preset: "islands#orangeIcon",
@@ -70,7 +70,7 @@ export function YandexMap() {
 
       {/* Кнопка */}
       <a
-        href="https://yandex.ru/maps/?ll=37.573856%2C55.751574&z=13"
+        href="https://yandex.com/maps/-/CPqvnOjR"
         target="_blank"
         className="absolute bottom-6 right-6 z-20 btn-primary"
       >

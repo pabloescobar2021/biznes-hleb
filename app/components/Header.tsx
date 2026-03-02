@@ -105,13 +105,13 @@ export function Header() {
             <div className="flex items-center justify-end gap-4">
 
               {/* Контакты */}
-              <div className="hidden md:flex flex-col items-end gap-0.5">
+              <div className="hidden md:flex flex-col items-start gap-0.5">
                 <Link
                   href={`tel:${phone}`}
                   style={{
-                    color: 'var(--color-text)',
+                    color: 'var(--color-muted)',
                     fontWeight: 600,
-                    fontSize: '0.88rem',
+                    fontSize: '0.8rem',
                     transition: 'color var(--transition)',
                   }}
                   className="hover:text-(--color-primary)"
@@ -123,7 +123,7 @@ export function Header() {
                   href={`mailto:${email}`}
                   style={{
                     color: 'var(--color-muted)',
-                    fontSize: '0.78rem',
+                    fontSize: '0.88rem',
                     transition: 'color var(--transition)',
                   }}
                   className="hover:text-(--color-primary)"

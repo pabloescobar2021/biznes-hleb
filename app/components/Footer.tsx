@@ -19,6 +19,7 @@ const catalogLinks = [
 
 const phone = process.env.NEXT_PUBLIC_PHONE || "+7 (999) 000-00-00";
 const email = process.env.NEXT_PUBLIC_EMAIL || "info@biznesihleb.ru";
+const adress = process.env.NEXT_PUBLIC_ADRESS
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -118,7 +119,7 @@ export function Footer() {
               Контакты
             </h3>
 
-            <div className="space-y-4 text-sm">
+            <div className="space-y-4 text-sm ">
 
               <a href={`tel:${phone}`} className="flex items-center gap-2 text-white/70 hover:text-amber-400 transition">
                 <Icon name="phone" /> {phone}
@@ -128,12 +129,12 @@ export function Footer() {
                 <Icon name="email" /> {email}
               </a>
 
-              <div className="flex items-center gap-2 text-white/70 hover:text-amber-400 transition">
-                <Icon name="location" /> г. Самара, Самарская область
+              <div className=" flex items-center gap-2 text-white/70 hover:text-amber-400 transition">
+                <Icon name="location" className="w-9 h-9" /> {adress}
               </div>
 
-              <div className="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-xs text-white/60">
-                <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              <div className="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs text-white/60">
+                <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
                 Пн–Пт, 9:00–18:00
               </div>
 
@@ -145,7 +146,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40 border-t border-white/10 pt-6">
           <div>© {year} Бизнес и Хлеб. Все права защищены.</div>
 
-          <Link href="/privacy" className="hover:text-white transition">
+          <Link href="/privacy-policy" className="hover:text-white transition">
             Политика конфиденциальности
           </Link>
         </div>

@@ -1,14 +1,15 @@
 "use client"
 
 import { useState } from "react";
-import { Product } from "../types/types";
+import { Category, Product } from "../types/types";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 type Props = {
-    products: Product[]
+    categories: Category[]
 }
 
-export function Hero() {
+export function Hero(p: Props) {
 
     return(
         <section 
@@ -41,29 +42,24 @@ export function Hero() {
                     оптовая база сухофруктов, кешью оптом, миндаль оптом, финики оптом
                 </p>
 
-                <p className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed max-w-lg">
+                <p className="text-lg md:text-xl text-gray-600 mb-2 leading-relaxed max-w-lg">
                     Работаем по всей Самарской области. 
                     Стабильные объёмы, свежая продукция и выгодные условия для магазинов и производств.
                 </p>
 
-                {/* Преимущества */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 text-sm">
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-amber-500 rounded-full" />
-                        Доставка по региону
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-amber-500 rounded-full" />
-                        Работаем с НДС
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-amber-500 rounded-full" />
-                        Минимальный заказ от 5 кг
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-amber-500 rounded-full" />
-                        Свежие партии каждую неделю
-                    </div>
+                {/* ── Category pills ── */}
+                <div className="py-5 flex flex-wrap gap-1 ">
+                    {p.categories.map((cat, i) => (
+                    <motion.span
+                        key={cat.id}
+                        initial={{ opacity: 0, scale: 0.85 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.1 + i * 0.04, duration: 0.35, ease: "easeOut" }}
+                        className="px-1 py-1.5 rounded-full text-xs font-semibold cursor-default text-black/50 "
+                    >
+                        {cat.name}
+                    </motion.span>
+                    ))}
                 </div>
 
                 {/* Кнопки */}
