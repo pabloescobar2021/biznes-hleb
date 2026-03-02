@@ -96,7 +96,7 @@ export function CategoryList({ categories }: Props) {
         "@type": "ListItem",
         position: index + 1,
         name: cat.name,
-        url: `https://${url}/catalog/${cat.slug}`,
+        url: `${url}/catalog/${cat.slug}`,
         offers: {
           "@type": "AggregateOffer",
           offerCount: cat.count,
@@ -122,14 +122,9 @@ export function CategoryList({ categories }: Props) {
       />
 
       {/* ── Header ── */}
-      <FadeUp className="flex items-end justify-between mb-7">
-        <div>
-          <span
-            className="text-xs font-bold uppercase tracking-[0.3em] block mb-3"
-            style={{ color: "var(--color-primary)" }}
-          >
-            Каталог продукции
-          </span>
+      <FadeUp className="flex items-end md:justify-between mb-7 justify-center">
+        <div className="flex flex-col md:items-start justify-center text-center">
+          
           <h2
             id="catalog-heading"
             className="text-4xl md:text-5xl font-bold leading-tight"
@@ -141,6 +136,11 @@ export function CategoryList({ categories }: Props) {
             Популярные
             категории
           </h2>
+          <p
+            className=""
+          >
+            Каталог продукции
+          </p>
         </div>
 
         <Link

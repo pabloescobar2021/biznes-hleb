@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Category, Product } from "../types/types";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -10,6 +10,24 @@ type Props = {
 }
 
 export function Hero(p: Props) {
+
+    const [showAll, setShowAll] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, []);
+
+    const isMobileLimit = 4;
+
+    const visibleCategories =
+        isMobile && !showAll
+            ? p.categories.slice(0, isMobileLimit)
+            : p.categories;
 
     return(
         <section 
@@ -49,7 +67,7 @@ export function Hero(p: Props) {
 
                 {/* ── Category pills ── */}
                 <div className="py-5 flex flex-wrap gap-1 ">
-                    {p.categories.map((cat, i) => (
+                    {visibleCategories.map((cat, i) => (
                     <motion.span
                         key={cat.id}
                         initial={{ opacity: 0, scale: 0.85 }}
@@ -60,10 +78,20 @@ export function Hero(p: Props) {
                         {cat.name}
                     </motion.span>
                     ))}
+
+                    {/* Кнопка показывается только если категорий больше лимита */}
+                    {(p.categories.length > isMobileLimit && isMobile) && (
+                        <button
+                        onClick={() => setShowAll((prev) => !prev)}
+                        className="mt-2 text-xs font-semibold text-black/60 hover:text-black transition"
+                        >
+                        {showAll ? "Свернуть" : "Показать все"}
+                        </button>
+                    )}
                 </div>
 
                 {/* Кнопки */}
-                <div className="flex gap-4">
+                <div className="flexC text-center gap-4">
                     <Link href="/catalog" className="btn-primary">
                     Смотреть каталог
                     </Link>
