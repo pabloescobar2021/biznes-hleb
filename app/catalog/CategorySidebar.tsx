@@ -1,155 +1,129 @@
-// components/CategorySidebar.tsx
 "use client";
 
 import { Icon } from "@/lib/Svgs/svg";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, memo } from "react";
 
 interface Props {
   categories: any[];
   activeSlug?: string;
-  viewMode: 'grid'|'list';
-  setViewMode: (viewMode: 'grid'|'list') => void;
+  activeColor?: string;
 }
 
-export function CategorySidebar({ 
-    activeSlug,
-    categories,
-    viewMode,
-    setViewMode
-}: Props) {
-    const [open, setOpen] = useState(true);
+// Утилиты цвета оставляем (они быстрые), но SidebarLink упрощаем
+const SidebarLink = memo(({ href, isActive, accentColor, count, children }: any) => {
+  // Вычисляем цвета один раз для ссылки
+  const [h, s, l] = hexToHsl(accentColor);
+  const textInactive = `hsla(${h}, ${s}%, 88%, 1)`;
+  const bgHover = `hsla(${h}, ${s}%, 35%, 0.5)`;
+
+  return (
+    <Link
+      href={href}
+      className={`
+        group flex justify-between items-center px-3 py-2.5 rounded-xl 
+        transition-all duration-150 text-sm font-medium
+      `}
+      style={{ 
+        // Используем inline-style только для динамических цветов, 
+        // которые зависят от категории, но ховер сделаем через класс ниже
+        backgroundColor: isActive ? accentColor : undefined,
+        color: isActive ? "#ffffff" : textInactive,
+      }}
+      // Используем CSS переменные для передачи цвета в Tailwind
+      onMouseEnter={(e) => !isActive && (e.currentTarget.style.backgroundColor = bgHover)}
+      onMouseLeave={(e) => !isActive && (e.currentTarget.style.backgroundColor = "transparent")}
+    >
+      <span className="truncate">{children}</span>
+      {count !== undefined && (
+        <span className="ml-2 text-xs flex-shrink-0 tabular-nums opacity-60">
+          {count}
+        </span>
+      )}
+    </Link>
+  );
+});
+
+// Основной сайдбар
+export function CategorySidebar({ categories, activeSlug, activeColor = "#92400e" }: Props) {
+  const [open, setOpen] = useState(true);
+
+  const [h, s, l] = hexToHsl(activeColor);
+  const sidebarBg = `hsl(${h}, ${Math.min(s + 10, 100)}%, ${Math.max(l - 18, 8)}%)`;
+  const headerColor = `hsla(${h}, ${s}%, 88%, 1)`;
+  const dividerColor = `hsla(${h}, ${s}%, 40%, 0.4)`;
 
   return (
     <>
-        {/* Оверлей — закрывает при клике мимо */}
-        {open && (
-            <div 
-                className="fixed inset-0 bg-black/40 z-30 md:hidden"
-                onClick={() => setOpen(false)}
-            />
-        )}
+      {open && <div className="fixed inset-0 bg-black/40 z-30 md:hidden" onClick={() => setOpen(false)} />}
 
-        <aside
-            style={{
-                background: 'var(--color-secondary)',    // #92400e тёмно-коричневый
-                boxShadow: 'var(--shadow-sidebar)',
-                // height: 'calc(100dvh - var(--header-height))'
-            }}
-            className={`fixed  md:relative w-58 flex flex-col z-40  p-3 text-white rounded-r-2xl overflow-hidden transition-all duration-150
-            ${open ? '' : '-translate-x-full'}    
-            `}
-            >
-            
-            <div className="absolute top-3 right-3 md:hidden" onClick={() => setOpen(prev => !prev)}>
-                <Icon name="close" className=" w-5 h-5"  />
-            </div>
+      <aside
+        className={`fixed md:relative w-58 flex flex-col z-40 overflow-hidden transition-all duration-300 ease-out ${
+          open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+        style={{
+          backgroundColor: sidebarBg,
+          backgroundImage: `linear-gradient(160deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%)`,
+          transitionProperty: "background-color, transform",
+          boxShadow: "var(--shadow-sidebar)",
+          borderRadius: "0 1rem 1rem 0",
+        }}
+      >
+        <div className="flex flex-col p-3 gap-1 h-[calc(100dvh-80px)]">
+          <h2 
+            className="px-3 pb-3 pt-1 text-xs font-bold tracking-[0.2em]" 
+            style={{ color: headerColor, fontSize: 30 }}>
+            КАТАЛОГ
+          </h2>
+          <div className="mx-3 mb-2 h-px" style={{ background: dividerColor }} />
+          
+          <div className="flex flex-col gap-0.5 overflow-y-auto flex-1 pr-1 custom-scrollbar">
+            <SidebarLink href="/catalog" isActive={!activeSlug} accentColor={activeColor}>
+              Все товары
+            </SidebarLink>
+            {categories?.map((cat) => (
+              <SidebarLink 
+                key={cat.id} 
+                href={`/catalog/${cat.slug}`} 
+                isActive={activeSlug === cat.slug} 
+                accentColor={activeColor}
+                count={cat.products?.[0]?.count}
+              >
+                {cat.name}
+              </SidebarLink>
+            ))}
+          </div>
+        </div>
+      </aside>
 
-            <div
-                style={{ height: 'calc(100dvh - 100px)' }}
-                className={`flex flex-col 
-                `}
-            >
-
-                <h2
-                    style={{ color: 'var(--color-primary-light)' }}
-                    className="mb-4 text-lg font-semibold tracking-wide"
-                >
-                    Категории
-                </h2>
-
-                <div className=" flex flex-col overflow-y-auto ">
-                    <Link
-                        href="/catalog"
-                        style={!activeSlug ? {
-                        background: 'var(--color-primary)',   // #d97706 amber — активный
-                        color: '#fff',
-                        } : {
-                        color: 'var(--color-primary-light)',  // #fef3c7 — неактивный
-                        }}
-                        className={`block px-3 py-2 rounded-xl transition text-sm font-medium ${
-                        !activeSlug ? '' : 'hover:bg-white/10'
-                        }`}
-                    >
-                        Все товары
-                    </Link>
-
-                    {categories?.map((cat) => {
-                        const count = cat.products?.[0]?.count ?? 0;
-                        const isActive = activeSlug === cat.slug;
-
-                        return (
-                        <Link
-                            key={cat.id}
-                            href={`/catalog/${cat.slug}`}
-                            className={`flex justify-between px-3 py-2 rounded-xl transition text-sm font-medium ${
-                            isActive 
-                                ? 'bg-(--color-primary) text-[#fff]' 
-                                : 'text-(--color-primary-light) hover:bg-white/10'
-                            }`}
-                        >
-                            <span>{cat.name}</span>
-                            <span style={{ opacity: 0.6 }}>{count}</span>
-                        </Link>
-                        );
-                    })}
-                </div>
-
-                <div className="mt-auto pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
-                    <p style={{ color: "var(--color-primary-light)", fontSize: "0.75rem" }} className="mb-2 opacity-70">
-                        Вид
-                    </p>
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => setViewMode("grid")}
-                            title="Сеткой"
-                            style={viewMode === "grid"
-                                ? { background: "var(--color-primary)", color: "#fff" }
-                                : { color: "var(--color-primary-light)" }
-                            }
-                            className="flex-1 flex items-center justify-center py-2 rounded-xl transition hover:bg-white/10"
-                        >
-                            {/* иконка сетки */}
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <rect x="3" y="3" width="8" height="8" rx="1.5"/>
-                                <rect x="13" y="3" width="8" height="8" rx="1.5"/>
-                                <rect x="3" y="13" width="8" height="8" rx="1.5"/>
-                                <rect x="13" y="13" width="8" height="8" rx="1.5"/>
-                            </svg>
-                        </button>
-
-                        <button
-                            onClick={() => setViewMode("list")}
-                            title="Списком"
-                            style={viewMode === "list"
-                                ? { background: "var(--color-primary)", color: "#fff" }
-                                : { color: "var(--color-primary-light)" }
-                            }
-                            className="flex-1 flex items-center justify-center py-2 rounded-xl transition hover:bg-white/10"
-                        >
-                            {/* иконка списка */}
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <rect x="3" y="4" width="18" height="3" rx="1.5"/>
-                                <rect x="3" y="10.5" width="18" height="3" rx="1.5"/>
-                                <rect x="3" y="17" width="18" height="3" rx="1.5"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        {/* Кнопка открытия — внизу экрана, удобно для большого пальца */}
+      {/* Кнопка открытия мобильная */}
         {!open && (
-            <button
-                className="fixed bottom-6 left-4 z-50 md:hidden
-                        bg-(--color-secondary) text-white 
-                        px-4 py-3 rounded-full shadow-lg"
-                onClick={() => setOpen(true)}
-            >
-                <Icon name="sideBarOpen" className="w-5 h-5" />
-            </button>
+        <button
+            className="fixed bottom-6 left-4 z-50 md:hidden px-4 py-3 rounded-full shadow-lg text-white"
+            style={{ background: activeColor }}
+            onClick={() => setOpen(true)}
+        >
+            <Icon name="sideBarOpen" className="w-5 h-5" />
+        </button>
         )}
     </>
   );
+}
+
+// Вспомогательная функция (вынеси её в utils.ts если можно)
+function hexToHsl(hex: string): [number, number, number] {
+  let r = parseInt(hex.slice(1, 3), 16) / 255;
+  let g = parseInt(hex.slice(3, 5), 16) / 255;
+  let b = parseInt(hex.slice(5, 7), 16) / 255;
+  let max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s = 0, l = (max + min) / 2;
+  if (max !== min) {
+    let d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h /= 6;
+  }
+  return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
 }
