@@ -15,6 +15,6 @@ export interface Product {
     category_id: number;
     category?: Category;
     manufacturer?: string;
-    weight?: string;
-    package_type?: string;
+    weight_kg?: string;
+    packaging_type?: string;
 }

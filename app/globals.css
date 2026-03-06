@@ -193,3 +193,13 @@ p {
 ::-webkit-scrollbar-track { background: var(--color-bg); }
 ::-webkit-scrollbar-thumb { background: var(--color-muted); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+}
