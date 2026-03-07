@@ -4,7 +4,7 @@ import { CategorySidebar } from "./CategorySidebar";
 import { Category, Product } from "../types/types";
 import Link from "next/link";
 import { columns_name_ru, CATEGORY_ACCENT, CATEGORY_ICON } from "@/app/catalog/catalogStuff/stuff";
-
+import { useDebounce } from "@/lib/hooks/useDebounce";
 
 
 
@@ -18,6 +18,7 @@ export function CatalogLayout({
   activeSlug?: string;
 }) {
   const [query, setQuery] = useState("");
+  const debouncedSearch = useDebounce(query, 200);
 
 
   const [currentColor, setCurrentColor] = useState("#d97706");
@@ -28,7 +29,7 @@ export function CatalogLayout({
 
   /* ───────────── фильтр ───────────── */
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = debouncedSearch.trim().toLowerCase();
     if (!q) return products;
     return products.filter(
       (p) =>
@@ -36,7 +37,7 @@ export function CatalogLayout({
         p.description?.toLowerCase().includes(q) ||
         p.manufacturer?.toLowerCase().includes(q)
     );
-  }, [query, products]);
+  }, [debouncedSearch, products]);
 
 
   /* ───────────── группировка ───────────── */
@@ -263,7 +264,7 @@ const ProductTable = memo(function ProductTable({
 
   return (
     /* Внешний контейнер со скроллом */
-    <div className="w-full overflow-x-auto scrollbar-hide "> 
+    <div className="w-full overflow-x-auto scrollbar-hide rounded-2xl"> 
       <div
         className="rounded-2xl inline-min-w-full" // Позволяет таблице растягиваться
         style={{  
