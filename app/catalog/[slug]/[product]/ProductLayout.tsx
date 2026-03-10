@@ -112,6 +112,9 @@ function QuickPill({ icon, label }: { icon: React.ReactNode; label: string }) {
 // ── Main Component ───────────────────────────────────────────────────────────
 
 export default function ProductLayout({ dataProduct, relatedProducts, slug, articleSku }: Props) {
+
+    const phone = process.env.NEXT_PUBLIC_PHONE
+
     const deliveryConditions = [
         {
             icon: <BoxIcon />,
@@ -281,16 +284,15 @@ export default function ProductLayout({ dataProduct, relatedProducts, slug, arti
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-2.5 sm:items-end">
-                                        <button
+                                        <Link
+                                            href={`tel:${phone}`}
                                             className="btn-primary flex items-center gap-2 whitespace-nowrap"
                                             style={{ background: "white", color: "var(--color-secondary)" }}
                                         >
                                             <PhoneIcon />
                                             Запросить цену
-                                        </button>
-                                        <span className="text-amber-300/80 text-[11px] text-center">
-                                            Ответим за 15 минут
-                                        </span>
+                                        </Link>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -323,8 +325,7 @@ export default function ProductLayout({ dataProduct, relatedProducts, slug, arti
                                 {dataProduct.manufacturer && (
                                     <SpecRow label="Завод-производитель" value={dataProduct.manufacturer} />
                                 )}
-                                <SpecRow label="Срок годности" value="12 месяцев (уточняется при отгрузке)" accent />
-                                <SpecRow label="Условия хранения" value="В сухом прохладном месте, t° до +20°C" />
+                                
                                 <SpecRow label="Стандарт качества" value="ГОСТ / ТУ (документы предоставляются)" accent />
                             </dl>
                         </section>
@@ -397,13 +398,14 @@ export default function ProductLayout({ dataProduct, relatedProducts, slug, arti
                                     className="px-5 py-5 border-t"
                                     style={{ borderColor: "var(--color-border)", background: "#fffbf5" }}
                                 >
-                                    <button
+                                    <Link
+                                        href={`tel:${phone}`}
                                         className="btn-primary w-full flex items-center justify-center gap-2"
                                         style={{ borderRadius: "var(--radius-md)" }}
                                     >
                                         <PhoneIcon />
                                         Получить коммерческое предложение
-                                    </button>
+                                    </Link>
                                     
                                 </div>
                             </div>
